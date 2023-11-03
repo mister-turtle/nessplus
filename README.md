@@ -10,11 +10,18 @@ go install github.com/mister-turtle/nessplus@latest
 
 ## Usage
 ```sh
-Usage of nessplus
-  -f string
-        Nessus file to import
+NAME:
+   nessplus - A new cli application
 
-nessus-compliance-2-csv -f ./CIS-2.0.0-Windows-10-L1.nessus > ./CIS-2.0.0-Windows-10-L1.csv
+USAGE:
+   nessplus [global options] command [command options] [arguments...]
+
+COMMANDS:
+   compliance, c  Parse compliance benchmarks from .nessus files
+   help, h        Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h  show help
 ```
 
 ## Todo
