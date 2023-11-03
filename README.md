@@ -12,7 +12,16 @@ go install github.com/mister-turtle/nessplus@latest
 ```
 
 ## Usage
-```sh
+```
+                           _            
+                          | |          
+ _ __   ___  ___ ___ _ __ | |_   _ ___ 
+| '_ \ / _ \/ __/ __| '_ \| | | | / __|
+| | | |  __/\__ \__ \ |_) | | |_| \__ \
+|_| |_|\___||___/___/ .__/|_|\__,_|___/
+                    | |                
+                    |_|                
+
 NAME:
    nessplus - A new cli application
 
