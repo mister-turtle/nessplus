@@ -1,7 +1,10 @@
 # NessPlus
   
-This is a quick project to take a .nessus scan report and pull out the compliance points, sort them, and print them to CSV.
-Currently, this just prints to stdout and can be redirected to a CSV file.
+This is an on-going project to make Nessus output more useful in day to day pentesting.
+
+## Features
+**Compliance**  
+Produce an overview of a Nessus compliance scan and optionally output a CSV file containing Compliance ID, Name, and Status.
 
 ## Installation
 ```sh
