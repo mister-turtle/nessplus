@@ -1,16 +1,12 @@
-package main
+package nessplus
 
 import (
-	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 
 	"github.com/maruel/natural"
-	"github.com/urfave/cli/v2"
 )
 
 type ComplianceOptions struct {
@@ -44,77 +40,27 @@ type ControlResult struct {
 	Status  string
 }
 
-func compliance(ctx *cli.Context) error {
-
-	var options ComplianceOptions
-	options.File = ctx.String("file")
-	options.CSVFile = ctx.String("csv")
-
-	overview, err := parseCompliance(ctx, options)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("Overview of %s...\n", filepath.Base(options.File))
-	log.Printf("Total hosts: %d\n", len(overview.Hosts))
-	for _, host := range overview.Hosts {
-		log.Printf("%s (%s)\n", host.Name, host.IP)
-		log.Printf("\tTotal (%d) / Passed (%d) / Failed (%d) / Warning (%d) / Other (%d)\n", host.Total, host.Passed, host.Failed, host.Warning, host.Other)
-	}
-
-	if options.CSVFile != "" {
-
-		dir := filepath.Dir(options.CSVFile)
-		base := filepath.Base(options.CSVFile)
-		file := strings.TrimSuffix(base, filepath.Ext(base))
-
-		for _, host := range overview.Hosts {
-			csvFileName := filepath.Join(dir, fmt.Sprintf("%s-%s.csv", file, host.Name))
-			csvFile, err := os.Create(csvFileName)
-			if err != nil {
-				return err
-			}
-
-			writer := csv.NewWriter(csvFile)
-			err = writer.Write([]string{"ComplianceID", "Name", "Status"})
-			if err != nil {
-				return err
-			}
-
-			for _, control := range host.Controls {
-				err = writer.Write([]string{control.CheckID, control.Name, control.Status})
-				if err != nil {
-					return err
-				}
-			}
-			writer.Flush()
-		}
-	}
-
-	return nil
-}
-
-func parseCompliance(ctx *cli.Context, options ComplianceOptions) (ComplianceOverview, error) {
+func ParseCompliance(options ComplianceOptions) (ComplianceOverview, error) {
 
 	fd, err := os.Open(options.File)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	run, err := Parse(fd)
+	run, err := parse(fd)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var overview ComplianceOverview
-	for _, policy := range run.Policy.Preferences.ServerPreferences.Preference {
+	for _, policy := range run.Raw.Policy.Preferences.ServerPreferences.Preference {
 		if policy.Name.Text == "scan_end_timestamp" {
 			overview.Date = policy.Value.Text
 		}
 	}
 
 	// a report can contain multiple hosts
-	for _, host := range run.Report.ReportHost {
+	for _, host := range run.Raw.Report.ReportHost {
 
 		var results = make(map[string]ControlResult)
 		var checkIds []string

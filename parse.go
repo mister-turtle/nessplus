@@ -1,11 +1,11 @@
-package main
+package nessplus
 
 import (
 	"encoding/xml"
 	"io"
 )
 
-type NessusRun struct {
+type NessusRaw struct {
 	XMLName xml.Name `xml:"NessusClientData_v2"`
 	Text    string   `xml:",chardata"`
 	Policy  struct {
@@ -231,14 +231,27 @@ type NessusRun struct {
 	} `xml:"Report"`
 }
 
-func Parse(r io.Reader) (*NessusRun, error) {
+type NessusRun struct {
+	Raw      NessusRaw
+	Metadata Metadata
+}
+
+func parse(r io.Reader) (*NessusRun, error) {
 
 	data, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
 
-	var results = NessusRun{}
-	err = xml.Unmarshal(data, &results)
-	return &results, err
+	var raw = NessusRaw{}
+	err = xml.Unmarshal(data, &raw)
+	if err != nil {
+		return nil, err
+	}
+
+	var run = NessusRun{
+		Raw: raw,
+	}
+
+	return &run, nil
 }
