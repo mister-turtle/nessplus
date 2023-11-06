@@ -250,7 +250,8 @@ func parse(r io.Reader) (*NessusRun, error) {
 	}
 
 	var run = NessusRun{
-		Raw: raw,
+		Raw:      raw,
+		Metadata: extractMetadata(raw),
 	}
 
 	return &run, nil

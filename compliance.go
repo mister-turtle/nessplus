@@ -15,9 +15,9 @@ type ComplianceOptions struct {
 }
 
 type ComplianceOverview struct {
-	Date      string
-	HostCount int
-	Hosts     []ComplianceHost
+	ScanMetadata Metadata
+	HostCount    int
+	Hosts        []ComplianceHost
 }
 
 type ComplianceHost struct {
@@ -53,11 +53,7 @@ func ParseCompliance(options ComplianceOptions) (ComplianceOverview, error) {
 	}
 
 	var overview ComplianceOverview
-	for _, policy := range run.Raw.Policy.Preferences.ServerPreferences.Preference {
-		if policy.Name.Text == "scan_end_timestamp" {
-			overview.Date = policy.Value.Text
-		}
-	}
+	overview.ScanMetadata = run.Metadata
 
 	// a report can contain multiple hosts
 	for _, host := range run.Raw.Report.ReportHost {

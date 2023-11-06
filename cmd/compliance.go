@@ -25,6 +25,8 @@ func compliance(ctx *cli.Context) error {
 	}
 
 	log.Printf("Overview of %s...\n", filepath.Base(options.File))
+	printMetadata(overview.ScanMetadata)
+
 	log.Printf("Total hosts: %d\n", len(overview.Hosts))
 	for _, host := range overview.Hosts {
 		log.Printf("%s (%s)\n", host.Name, host.IP)
