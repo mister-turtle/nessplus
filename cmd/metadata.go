@@ -9,10 +9,10 @@ import (
 func printMetadata(meta nessplus.Metadata) {
 
 	log.Printf("Scan Metadata----------\n")
-	log.Printf("The scan %s started at %s and ended at %s (%s) by %s\n",
+	log.Printf("The scan %s started on %s and ended at %s (%s) by %s\n",
 		meta.Name,
-		meta.Timing.Start,
-		meta.Timing.End,
+		meta.Timing.Start.Format("Mon Jan 2 15:04:05 MST 2006"),
+		meta.Timing.End.Format("Mon Jan 2 15:04:05 MST 2006"),
 		meta.Timing.Dueration,
 		meta.RunBy,
 	)
