@@ -1,6 +1,7 @@
 package nessplus
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -9,6 +10,15 @@ import (
 
 // Compliance represents the compliance benchmark run against a single host and includes metadata about the compliance status as a whole along.
 type Compliance struct {
+	Total   int
+	Passed  int
+	Warning int
+	Failed  int
+	Other   int
+	Audits  map[string]Audit
+}
+
+type Audit struct {
 	Total    int
 	Passed   int
 	Warning  int
@@ -19,20 +29,21 @@ type Compliance struct {
 
 // Control stores the result for a single benchmark control.
 type Control struct {
-	ID     string
-	Name   string
-	Status string
+	ID        string
+	Name      string
+	Status    string
+	AuditFile string
 }
 
 // ParseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
 // control IDs are returned in sorted, ascending order.
 func parseCompliance(host ReportHost) (Compliance, error) {
 
-	// use a map to store unsorted compliance controls from the nessus data and maintain a slice of observed IDs to sort later.
-	var controls = make(map[string]Control)
-	var controlIds []string
+	var unsortedControls = make(map[string]map[string]Control)
+	var unsortedControlIds = make(map[string][]string)
 
-	var hostResult Compliance
+	var compliance Compliance
+	compliance.Audits = make(map[string]Audit)
 
 	for _, item := range host.ReportItems {
 
@@ -41,6 +52,14 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 		// a report item could be any number of things, filter out non-compliance here
 		if item.Compliance == "" {
 			continue
+		}
+
+		// nessus can run multiple benchmarks at the same time, grab the audit file used for this control.
+		control.AuditFile = item.ComplianceAuditFile
+
+		// create the map of control ID to control in the unsorted map
+		if _, ok := unsortedControls[control.AuditFile]; !ok {
+			unsortedControls[control.AuditFile] = make(map[string]Control)
 		}
 
 		// we want to split "1.1.1.1 control description" into an identifier and a name
@@ -58,35 +77,54 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 			control.Status = item.ComplianceResult
 		}
 
-		// handle totals
-		hostResult.Total++
+		// add the control ID into the observed id slice for sorting later
+		unsortedControlIds[control.AuditFile] = append(unsortedControlIds[control.AuditFile], control.ID)
+
+		// handle host totals
+		auditTotals := compliance.Audits[control.AuditFile]
+		compliance.Total++
+		auditTotals.Total++
+
 		switch control.Status {
 		case "PASSED":
-			hostResult.Passed++
+			compliance.Passed++
+			auditTotals.Passed++
 		case "FAILED":
-			hostResult.Failed++
+			compliance.Failed++
+			auditTotals.Failed++
 		case "WARNING":
-			hostResult.Warning++
+			compliance.Warning++
+			auditTotals.Warning++
 		default:
-			hostResult.Other++
+			compliance.Other++
+			auditTotals.Other++
 		}
 
-		// append to checkIds slice for sorting
-		controlIds = append(controlIds, control.ID)
+		compliance.Audits[control.AuditFile] = auditTotals
+		// handler per-audit totals
 
 		// add to results map for storing
-		controls[control.ID] = control
+		unsortedControls[control.AuditFile][control.ID] = control
 	}
 
-	// create a slice to hold the sorted controls then sort the observed control ids slice
-	var sorted = make([]Control, len(controlIds))
-	sort.Sort(natural.StringSlice(controlIds))
+	// for each audit (key) in the map, get the controls map (value)
+	for audit, _ := range unsortedControls {
 
-	// iterate through the now sorted id slice and add them from the map into the slice of controls
-	for i := 0; i < len(controlIds); i++ {
-		sorted[i] = controls[controlIds[i]]
+		if ids, ok := unsortedControlIds[audit]; ok {
+
+			var sorted = make([]Control, len(ids))
+			sort.Sort(natural.StringSlice(ids))
+
+			for i := 0; i < len(ids); i++ {
+				sorted[i] = unsortedControls[audit][ids[i]]
+			}
+			tmpAudit := compliance.Audits[audit]
+			tmpAudit.Controls = sorted
+			compliance.Audits[audit] = tmpAudit
+		} else {
+			return Compliance{}, fmt.Errorf("the control id list %s for sorting does not exist", audit)
+		}
 	}
 
-	hostResult.Controls = sorted
-	return hostResult, nil
+	return compliance, nil
 }
