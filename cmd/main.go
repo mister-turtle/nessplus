@@ -51,6 +51,10 @@ func main() {
 						Name:  "csv",
 						Usage: "[optional] CSV `FILE` to output, the hostname will be appended to the filename before the CSV extension",
 					},
+					&cli.BoolFlag{
+						Name:  "print-failed",
+						Usage: "[optional] print failed controls to the terminal",
+					},
 				},
 				Action: compliance,
 			},

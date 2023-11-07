@@ -16,6 +16,7 @@ func compliance(ctx *cli.Context) error {
 
 	argFile := ctx.String("file")
 	argCSVFile := ctx.String("csv")
+	argPrintFailed := ctx.Bool("print-failed")
 
 	fd, err := os.Open(argFile)
 	if err != nil {
@@ -65,6 +66,18 @@ func compliance(ctx *cli.Context) error {
 				yellow(audit.Warning),
 				blue(audit.Other),
 			)
+			if argPrintFailed {
+				for _, control := range audit.Controls {
+					if control.Status != "FAILED" {
+						continue
+					}
+					log.Printf("\t\t%s - %s -%s\n",
+						control.ID,
+						control.Name,
+						red(control.Status),
+					)
+				}
+			}
 		}
 
 	}
