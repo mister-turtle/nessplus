@@ -23,13 +23,13 @@ go install github.com/mister-turtle/nessplus@latest
                     |_|                
 
 NAME:
-   nessplus - A new cli application
+   nessplus - Parse .nessus files in useful ways
 
 USAGE:
    nessplus [global options] command [command options] [arguments...]
 
 COMMANDS:
-   compliance, c  Parse compliance benchmarks from .nessus files
+   compliance, c  Parse compliance benchmarks from .nessus file
    help, h        Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
