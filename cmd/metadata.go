@@ -12,7 +12,7 @@ func printMetadata(meta nessplus.Metadata) {
 		meta.Name,
 		meta.Timing.Start.Format("Mon Jan 2 15:04:05 MST 2006"),
 		meta.Timing.End.Format("Mon Jan 2 15:04:05 MST 2006"),
-		meta.Timing.Dueration,
+		meta.Timing.Duration,
 		meta.RunBy,
 	)
 	log.Printf("")

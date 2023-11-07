@@ -14,9 +14,9 @@ type Metadata struct {
 }
 
 type Timing struct {
-	Start     time.Time
-	End       time.Time
-	Dueration time.Duration
+	Start    time.Time
+	End      time.Time
+	Duration time.Duration
 }
 
 func extractMetadata(raw NessusRaw) Metadata {
@@ -51,7 +51,7 @@ func extractMetadata(raw NessusRaw) Metadata {
 		}
 
 		if !meta.Timing.Start.IsZero() && !meta.Timing.End.IsZero() {
-			meta.Timing.Dueration = meta.Timing.End.Sub(meta.Timing.Start)
+			meta.Timing.Duration = meta.Timing.End.Sub(meta.Timing.Start)
 		}
 	}
 
