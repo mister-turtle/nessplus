@@ -34,7 +34,12 @@ func compliance(ctx *cli.Context) error {
 	log.Printf("Total hosts: %d\n", len(overview.Hosts))
 	for _, host := range overview.Hosts {
 		log.Printf("%s (%s)\n", host.Name, host.IP)
-		log.Printf("\tTotal (%d) / Passed (%d) / Failed (%d) / Warning (%d) / Other (%d)\n", host.Compliance.Total, host.Compliance.Passed, host.Compliance.Failed, host.Compliance.Warning, host.Compliance.Other)
+		log.Printf("\tTotal (%s) / Passed (%s) / Failed (%s) / Warning (%s) / Other (%s)\n",
+			blue(host.Compliance.Total),
+			green(host.Compliance.Passed),
+			red(host.Compliance.Failed),
+			yellow(host.Compliance.Warning),
+			blue(host.Compliance.Other))
 	}
 
 	if argCSVFile != "" {

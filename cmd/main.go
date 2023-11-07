@@ -4,7 +4,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
+)
+
+var (
+	red    = color.New(color.FgRed).SprintFunc()
+	blue   = color.New(color.FgBlue).SprintFunc()
+	green  = color.New(color.FgGreen).SprintFunc()
+	yellow = color.New(color.FgYellow).SprintFunc()
 )
 
 var banner = `
@@ -26,6 +34,8 @@ func main() {
 	log.Println(banner)
 
 	app := &cli.App{
+		Name:  "nessplus",
+		Usage: "Parse .nessus files in useful ways",
 		Commands: []*cli.Command{
 			{
 				Name:    "compliance",
@@ -34,12 +44,12 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "file",
-						Usage:    ".nessus file to import",
+						Usage:    "load scan from .nessus `FILE`",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:  "csv",
-						Usage: "optional CSV file to output",
+						Usage: "[optional] CSV `FILE` to output, the hostname will be appended to the filename before the CSV extension",
 					},
 				},
 				Action: compliance,
