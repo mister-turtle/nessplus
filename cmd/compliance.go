@@ -71,7 +71,7 @@ func compliance(ctx *cli.Context) error {
 					if control.Status != "FAILED" {
 						continue
 					}
-					log.Printf("\t\t%s - %s -%s\n",
+					log.Printf("\t\t%s - %s - %s\n",
 						control.ID,
 						control.Name,
 						red(control.Status),
