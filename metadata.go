@@ -22,12 +22,12 @@ type Timing struct {
 func extractMetadata(raw NessusRaw) Metadata {
 	var meta Metadata
 
-	meta.PolicyName = raw.Policy.PolicyName.Text
+	meta.PolicyName = raw.Policy.PolicyName
 
-	for _, policy := range raw.Policy.Preferences.ServerPreferences.Preference {
-		switch policy.Name.Text {
+	for _, policy := range raw.Policy.Preferences.Server.Preferences {
+		switch policy.Name {
 		case "scan_end_timestamp":
-			i, err := strconv.ParseInt(policy.Value.Text, 10, 64)
+			i, err := strconv.ParseInt(policy.Value, 10, 64)
 			if err != nil {
 				break
 			}
@@ -35,7 +35,7 @@ func extractMetadata(raw NessusRaw) Metadata {
 			meta.Timing.End = tm
 
 		case "scan_start_timestamp":
-			i, err := strconv.ParseInt(policy.Value.Text, 10, 64)
+			i, err := strconv.ParseInt(policy.Value, 10, 64)
 			if err != nil {
 				break
 			}
@@ -43,15 +43,40 @@ func extractMetadata(raw NessusRaw) Metadata {
 			meta.Timing.Start = tm
 
 		case "scan_name":
-			meta.Name = policy.Value.Text
+			meta.Name = policy.Value
 		case "whoami":
-			meta.RunBy = policy.Value.Text
+			meta.RunBy = policy.Value
 		case "description":
-			meta.Description = policy.Value.Text
+			meta.Description = policy.Value
 		}
 
 		if !meta.Timing.Start.IsZero() && !meta.Timing.End.IsZero() {
 			meta.Timing.Dueration = meta.Timing.End.Sub(meta.Timing.Start)
+		}
+	}
+
+	return meta
+}
+
+type HostMetadata struct {
+	Name            string
+	IP              string
+	OperatingSystem string
+}
+
+func extractHostMetadata(host ReportHost) HostMetadata {
+	var meta HostMetadata
+
+	meta.Name = host.Name
+
+	for _, tag := range host.HostProperties.Tags {
+		switch tag.Name {
+		case "hostname":
+			meta.Name = tag.Data
+		case "os":
+			meta.OperatingSystem = tag.Data
+		case "host-ip":
+			meta.IP = tag.Data
 		}
 	}
 

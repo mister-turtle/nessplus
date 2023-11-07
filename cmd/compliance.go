@@ -14,29 +14,32 @@ import (
 
 func compliance(ctx *cli.Context) error {
 
-	var options = nessplus.ComplianceOptions{
-		File:    ctx.String("file"),
-		CSVFile: ctx.String("csv"),
-	}
+	argFile := ctx.String("file")
+	argCSVFile := ctx.String("csv")
 
-	overview, err := nessplus.ParseCompliance(options)
+	fd, err := os.Open(argFile)
 	if err != nil {
 		return err
 	}
 
-	log.Printf("Overview of %s...\n", filepath.Base(options.File))
-	printMetadata(overview.ScanMetadata)
+	overview, err := nessplus.Parse(fd)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("File - %s\n", filepath.Base(argFile))
+	log.Println()
 
 	log.Printf("Total hosts: %d\n", len(overview.Hosts))
 	for _, host := range overview.Hosts {
 		log.Printf("%s (%s)\n", host.Name, host.IP)
-		log.Printf("\tTotal (%d) / Passed (%d) / Failed (%d) / Warning (%d) / Other (%d)\n", host.Total, host.Passed, host.Failed, host.Warning, host.Other)
+		log.Printf("\tTotal (%d) / Passed (%d) / Failed (%d) / Warning (%d) / Other (%d)\n", host.Compliance.Total, host.Compliance.Passed, host.Compliance.Failed, host.Compliance.Warning, host.Compliance.Other)
 	}
 
-	if options.CSVFile != "" {
+	if argCSVFile != "" {
 
-		dir := filepath.Dir(options.CSVFile)
-		base := filepath.Base(options.CSVFile)
+		dir := filepath.Dir(argCSVFile)
+		base := filepath.Base(argCSVFile)
 		file := strings.TrimSuffix(base, filepath.Ext(base))
 
 		for _, host := range overview.Hosts {
@@ -52,7 +55,7 @@ func compliance(ctx *cli.Context) error {
 				return err
 			}
 
-			for _, control := range host.Controls {
+			for _, control := range host.Compliance.Controls {
 				err = writer.Write([]string{control.CheckID, control.Name, control.Status})
 				if err != nil {
 					return err

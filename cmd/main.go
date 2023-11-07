@@ -30,7 +30,7 @@ func main() {
 			{
 				Name:    "compliance",
 				Aliases: []string{"c"},
-				Usage:   "Parse compliance benchmarks from .nessus files",
+				Usage:   "Parse compliance benchmarks from .nessus file",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "file",

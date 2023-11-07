@@ -37,10 +37,10 @@ GLOBAL OPTIONS:
 ```
 
 ## Todo
-- [ ] Scan overview
-- [ ] Tidy up compliance CSV code
-- [ ] Output host list
-- [ ] Output host and ports list
-- [ ] Inlcuding CVEs
+- [X] Metadata extraction
+- [X] Tidy up compliance CSV code
+- [ ] Extract host list
+- [ ] Extract host and port list
+- [ ] Extract CVEs attached to a host/service
 - [ ] Use searchsploit to find known exploit code
 - [ ] Collate issues for reporting (opinionated)
