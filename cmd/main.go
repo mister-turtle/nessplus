@@ -10,10 +10,12 @@ import (
 )
 
 var (
-	red    = color.New(color.FgRed).SprintFunc()
-	blue   = color.New(color.FgBlue).SprintFunc()
-	green  = color.New(color.FgGreen).SprintFunc()
-	yellow = color.New(color.FgYellow).SprintFunc()
+	blue    = color.New(color.FgBlue).SprintFunc()
+	green   = color.New(color.FgGreen).SprintFunc()
+	yellow  = color.New(color.FgYellow).SprintFunc()
+	orange  = color.New(color.FgHiYellow).SprintFunc()
+	red     = color.New(color.FgRed).SprintFunc()
+	darkred = color.New(color.FgHiRed).SprintFunc()
 )
 
 var banner = `
