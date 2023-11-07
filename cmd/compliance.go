@@ -62,7 +62,7 @@ func compliance(ctx *cli.Context) error {
 			}
 
 			for _, control := range host.Compliance.Controls {
-				err = writer.Write([]string{control.CheckID, control.Name, control.Status})
+				err = writer.Write([]string{control.ID, control.Name, control.Status})
 				if err != nil {
 					return err
 				}

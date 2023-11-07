@@ -1,13 +1,13 @@
 package nessplus
 
 import (
-	"log"
 	"sort"
 	"strings"
 
 	"github.com/maruel/natural"
 )
 
+// Compliance represents the compliance benchmark run against a single host and includes metadata about the compliance status as a whole along.
 type Compliance struct {
 	Total    int
 	Passed   int
@@ -17,41 +17,50 @@ type Compliance struct {
 	Controls []Control
 }
 
+// Control stores the result for a single benchmark control.
 type Control struct {
-	CheckID string
-	Name    string
-	Status  string
+	ID     string
+	Name   string
+	Status string
 }
 
+// ParseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
+// control IDs are returned in sorted, ascending order.
 func ParseCompliance(host ReportHost) (Compliance, error) {
 
-	var results = make(map[string]Control)
-	var checkIds []string
+	// use a map to store unsorted compliance controls from the nessus data and maintain a slice of observed IDs to sort later.
+	var controls = make(map[string]Control)
+	var controlIds []string
+
 	var hostResult Compliance
 
 	for _, item := range host.ReportItems {
 
-		var result Control
+		var control Control
+
+		// a report item could be any number of things, filter out non-compliance here
 		if item.Compliance == "" {
 			continue
 		}
 
+		// we want to split "1.1.1.1 control description" into an identifier and a name
 		name := item.ComplianceCheckName
-
 		nameSplit := strings.Split(name, " ")
+
 		if len(nameSplit) == 0 {
-			result.CheckID = "Unknown"
-			result.Status = item.ComplianceResult
-			result.Name = name
+			control.ID = "Unknown"
+			control.Status = item.ComplianceResult
+			control.Name = name
 		} else {
-			result.CheckID = nameSplit[0]
-			result.Name = strings.Join(nameSplit[1:], " ")
-			result.Name = strings.ReplaceAll(result.Name, ",", " ")
-			result.Status = item.ComplianceResult
+			control.ID = nameSplit[0]
+			control.Name = strings.Join(nameSplit[1:], " ")
+			control.Name = strings.ReplaceAll(control.Name, ",", " ")
+			control.Status = item.ComplianceResult
 		}
 
+		// handle totals
 		hostResult.Total++
-		switch result.Status {
+		switch control.Status {
 		case "PASSED":
 			hostResult.Passed++
 		case "FAILED":
@@ -59,22 +68,23 @@ func ParseCompliance(host ReportHost) (Compliance, error) {
 		case "WARNING":
 			hostResult.Warning++
 		default:
-			log.Printf("DEBUG: %s\n", result.Status)
 			hostResult.Other++
 		}
 
 		// append to checkIds slice for sorting
-		checkIds = append(checkIds, result.CheckID)
+		controlIds = append(controlIds, control.ID)
 
 		// add to results map for storing
-		results[result.CheckID] = result
+		controls[control.ID] = control
 	}
 
-	// return a sorted slice of compliance results
-	var sorted = make([]Control, len(checkIds))
-	sort.Sort(natural.StringSlice(checkIds))
-	for i := 0; i < len(checkIds); i++ {
-		sorted[i] = results[checkIds[i]]
+	// create a slice to hold the sorted controls then sort the observed control ids slice
+	var sorted = make([]Control, len(controlIds))
+	sort.Sort(natural.StringSlice(controlIds))
+
+	// iterate through the now sorted id slice and add them from the map into the slice of controls
+	for i := 0; i < len(controlIds); i++ {
+		sorted[i] = controls[controlIds[i]]
 	}
 
 	hostResult.Controls = sorted
