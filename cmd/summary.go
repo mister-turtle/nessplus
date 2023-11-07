@@ -22,7 +22,7 @@ func summary(ctx *cli.Context) error {
 	for _, host := range run.Hosts {
 		log.Printf("Host: %s [ip:%s,os:%s]\n", host.Name, host.IP, host.OperatingSystem)
 		for _, issue := range host.Issues {
-			if issue.SeverityInt > argMinLevel {
+			if issue.SeverityInt >= argMinLevel {
 				switch issue.Severity {
 				case "Informational":
 					color.Green("\t[%s] %s\n", issue.Severity, issue.Name)
