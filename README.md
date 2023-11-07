@@ -4,11 +4,14 @@ This is an on-going project to make Nessus output more useful in day to day pent
 
 ## Features
 **Compliance**  
-Produce an overview of a Nessus compliance scan and optionally output a CSV file containing Compliance ID, Name, and Status.
+Produce an overview of a Nessus compliance scan: 
+* Supports multiple compliance benchmarks per host in a single run
+* Optionally write a CSV per host and benchmark containing results
+* Optionally print failed controls to the terminal
 
 ## Installation
 ```sh
-go install github.com/mister-turtle/nessplus@latest
+go install github.com/mister-turtle/nessplus/cmd@latest
 ```
 
 ## Usage
@@ -37,10 +40,8 @@ GLOBAL OPTIONS:
 ```
 
 ## Todo
-- [X] Metadata extraction
-- [X] Tidy up compliance CSV code
 - [ ] Extract host list
-- [ ] Extract host and port list
+- [ ] Extract host services list
 - [ ] Extract CVEs attached to a host/service
 - [ ] Use searchsploit to find known exploit code
 - [ ] Collate issues for reporting (opinionated)
