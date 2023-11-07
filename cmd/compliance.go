@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mister-turtle/nessplus"
 	"github.com/urfave/cli/v2"
 )
 
@@ -18,18 +17,11 @@ func compliance(ctx *cli.Context) error {
 	argCSVFile := ctx.String("csv")
 	argPrintFailed := ctx.Bool("print-failed")
 
-	fd, err := os.Open(argFile)
+	overview, err := parse(argFile)
 	if err != nil {
 		return err
 	}
 
-	overview, err := nessplus.Parse(fd)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("File - %s\n", filepath.Base(argFile))
-	log.Println()
 	printMetadata(overview.Metadata)
 
 	complianceHosts := 0

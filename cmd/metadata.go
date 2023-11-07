@@ -8,7 +8,7 @@ import (
 
 func printMetadata(meta nessplus.Metadata) {
 
-	log.Printf("The scan %s started on %s and ended at %s (%s) by %s\n",
+	log.Printf("The scan %s started on %s and ended on %s (%s) by %s\n",
 		blue(meta.Name),
 		green(meta.Timing.Start.Format("Monday, 2 January at 15:04:05 2006")),
 		green(meta.Timing.End.Format("Monday, 2 January at 15:04:05 2006")),

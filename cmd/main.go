@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+	"github.com/mister-turtle/nessplus"
 	"github.com/urfave/cli/v2"
 )
 
@@ -41,6 +42,7 @@ func main() {
 				Name:    "compliance",
 				Aliases: []string{"c"},
 				Usage:   "Parse compliance benchmarks from .nessus file",
+				Action:  compliance,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "file",
@@ -56,7 +58,24 @@ func main() {
 						Usage: "[optional] print failed controls to the terminal",
 					},
 				},
-				Action: compliance,
+			},
+			{
+				Name:    "summary",
+				Aliases: []string{"s"},
+				Usage:   "Print out a summary of a nessus scan",
+				Action:  summary,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "file",
+						Usage:    "load scan from a .nessus `FILE`",
+						Required: true,
+					},
+					&cli.IntFlag{
+						Name:        "level",
+						Usage:       "minimum severity to print 0 - informational to 4 - critical",
+						DefaultText: "2",
+					},
+				},
 			},
 		},
 	}
@@ -64,4 +83,15 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func parse(file string) (*nessplus.NessusRun, error) {
+
+	fd, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return nessplus.Parse(fd)
+
 }
