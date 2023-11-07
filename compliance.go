@@ -26,7 +26,7 @@ type Control struct {
 
 // ParseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
 // control IDs are returned in sorted, ascending order.
-func ParseCompliance(host ReportHost) (Compliance, error) {
+func parseCompliance(host ReportHost) (Compliance, error) {
 
 	// use a map to store unsorted compliance controls from the nessus data and maintain a slice of observed IDs to sort later.
 	var controls = make(map[string]Control)

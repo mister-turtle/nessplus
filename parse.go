@@ -141,7 +141,7 @@ func Parse(r io.Reader) (*NessusRun, error) {
 		reportHost.OperatingSystem = meta.OperatingSystem
 
 		// Extract any compliance results from the ReportHost
-		compliance, err := ParseCompliance(host)
+		compliance, err := parseCompliance(host)
 		if err != nil {
 			return nil, err
 		}
