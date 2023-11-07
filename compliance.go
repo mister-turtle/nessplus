@@ -108,7 +108,7 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 	}
 
 	// for each audit (key) in the map, get the controls map (value)
-	for audit, _ := range unsortedControls {
+	for audit := range unsortedControls {
 
 		if ids, ok := unsortedControlIds[audit]; ok {
 
