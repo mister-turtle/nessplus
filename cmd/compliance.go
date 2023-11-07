@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/mister-turtle/nessplus"
 	"github.com/urfave/cli/v2"
@@ -53,29 +56,28 @@ func compliance(ctx *cli.Context) error {
 			yellow(host.Compliance.Warning),
 			blue(host.Compliance.Other))
 
-		for k, v := range host.Compliance.Audits {
+		for auditName, audit := range host.Compliance.Audits {
 			log.Printf("\t%s - %s/%s/%s/%s/%s\n",
-				k,
-				blue(v.Total),
-				green(v.Passed),
-				red(v.Failed),
-				yellow(v.Warning),
-				blue(v.Other),
+				auditName,
+				blue(audit.Total),
+				green(audit.Passed),
+				red(audit.Failed),
+				yellow(audit.Warning),
+				blue(audit.Other),
 			)
 		}
 
 	}
 
-	log.Printf(argCSVFile)
-	/*
-		if argCSVFile != "" {
+	if argCSVFile != "" {
 
-			dir := filepath.Dir(argCSVFile)
-			base := filepath.Base(argCSVFile)
-			file := strings.TrimSuffix(base, filepath.Ext(base))
+		dir := filepath.Dir(argCSVFile)
+		base := filepath.Base(argCSVFile)
+		file := strings.TrimSuffix(base, filepath.Ext(base))
 
-			for _, host := range overview.Hosts {
-				csvFileName := filepath.Join(dir, fmt.Sprintf("%s-%s.csv", file, host.Name))
+		for _, host := range overview.Hosts {
+			for auditName, audit := range host.Compliance.Audits {
+				csvFileName := filepath.Join(dir, fmt.Sprintf("%s-%s-%s.csv", file, host.Name, auditName))
 				csvFile, err := os.Create(csvFileName)
 				if err != nil {
 					return err
@@ -87,7 +89,7 @@ func compliance(ctx *cli.Context) error {
 					return err
 				}
 
-				for _, control := range host.Compliance.Controls {
+				for _, control := range audit.Controls {
 					err = writer.Write([]string{control.ID, control.Name, control.Status})
 					if err != nil {
 						return err
@@ -96,6 +98,6 @@ func compliance(ctx *cli.Context) error {
 				writer.Flush()
 			}
 		}
-	*/
+	}
 	return nil
 }
