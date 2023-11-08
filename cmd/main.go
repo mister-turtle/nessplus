@@ -79,6 +79,19 @@ func main() {
 					},
 				},
 			},
+			{
+				Name:    "services",
+				Aliases: []string{"serv"},
+				Usage:   "Print out discovered services",
+				Action:  services,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "file",
+						Usage:    "load scan from a .nessus `FILE`",
+						Required: true,
+					},
+				},
+			},
 		},
 	}
 

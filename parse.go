@@ -112,6 +112,7 @@ type Host struct {
 	OperatingSystem string
 	Compliance      Compliance
 	Issues          []Issue
+	Services        []Service
 }
 
 func Parse(r io.Reader) (*NessusRun, error) {
@@ -154,6 +155,13 @@ func Parse(r io.Reader) (*NessusRun, error) {
 			return nil, err
 		}
 		reportHost.Issues = issues
+
+		// Extract services
+		services, err := parseServices(host)
+		if err != nil {
+			return nil, err
+		}
+		reportHost.Services = services
 
 		run.Hosts = append(run.Hosts, reportHost)
 	}
