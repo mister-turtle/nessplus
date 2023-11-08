@@ -42,7 +42,7 @@ func main() {
 		Commands: []*cli.Command{
 			{
 				Name:    "compliance",
-				Aliases: []string{"c"},
+				Aliases: []string{"com"},
 				Usage:   "Parse compliance benchmarks from .nessus file",
 				Action:  compliance,
 				Flags: []cli.Flag{
@@ -63,7 +63,7 @@ func main() {
 			},
 			{
 				Name:    "summary",
-				Aliases: []string{"s"},
+				Aliases: []string{"sum"},
 				Usage:   "Print out a summary of a nessus scan",
 				Action:  summary,
 				Flags: []cli.Flag{
