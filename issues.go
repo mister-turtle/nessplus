@@ -2,6 +2,7 @@ package nessplus
 
 import (
 	"fmt"
+	"sort"
 )
 
 var Severities = []string{
@@ -44,6 +45,10 @@ func parseIssues(host ReportHost) ([]Issue, error) {
 		}
 		issues = append(issues, issue)
 	}
+
+	sort.Slice(issues, func(i, j int) bool {
+		return issues[i].SeverityInt > issues[j].SeverityInt
+	})
 
 	return issues, nil
 }

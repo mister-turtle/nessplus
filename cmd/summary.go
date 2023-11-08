@@ -38,6 +38,7 @@ func summary(ctx *cli.Context) error {
 
 			}
 		}
+		log.Println()
 	}
 
 	return nil
