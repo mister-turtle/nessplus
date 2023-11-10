@@ -21,7 +21,7 @@ Display a list of discovered services per host
 
 ## Installation
 ```sh
-go install github.com/mister-turtle/nessplus/cmd@latest
+go install github.com/mister-turtle/nessplus/cmd/nessplus@latest
 ```
 
 ## Usage
