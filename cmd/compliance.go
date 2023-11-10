@@ -89,13 +89,13 @@ func compliance(ctx *cli.Context) error {
 				}
 
 				writer := csv.NewWriter(csvFile)
-				err = writer.Write([]string{"ComplianceID", "Name", "Status"})
+				err = writer.Write([]string{"ComplianceID", "Name", "Status", "Actual Value"})
 				if err != nil {
 					return err
 				}
 
 				for _, control := range audit.Controls {
-					err = writer.Write([]string{control.ID, control.Name, control.Status})
+					err = writer.Write([]string{control.ID, control.Name, control.Status, control.ActualValue})
 					if err != nil {
 						return err
 					}

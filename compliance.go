@@ -29,10 +29,11 @@ type Audit struct {
 
 // Control stores the result for a single benchmark control.
 type Control struct {
-	ID        string
-	Name      string
-	Status    string
-	AuditFile string
+	ID          string
+	Name        string
+	Status      string
+	ActualValue string
+	AuditFile   string
 }
 
 // ParseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
@@ -70,11 +71,13 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 			control.ID = "Unknown"
 			control.Status = item.ComplianceResult
 			control.Name = name
+			control.ActualValue = item.ComplianceActualValue
 		} else {
 			control.ID = nameSplit[0]
 			control.Name = strings.Join(nameSplit[1:], " ")
 			control.Name = strings.ReplaceAll(control.Name, ",", " ")
 			control.Status = item.ComplianceResult
+			control.ActualValue = item.ComplianceActualValue
 		}
 
 		// add the control ID into the observed id slice for sorting later
