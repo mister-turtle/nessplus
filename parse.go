@@ -98,6 +98,8 @@ type ReportItem struct {
 	ComplianceCheckID          string   `xml:"compliance-check-id"`
 	ComplianceAuditFile        string   `xml:"compliance-audit-file"`
 	ComplianceCheckName        string   `xml:"compliance-check-name"`
+	ComplianceInfo             string   `xml:"compliance-info"`
+	ComplianceSolution         string   `xml:"compliance-solution"`
 }
 
 type NessusRun struct {

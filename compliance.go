@@ -33,6 +33,9 @@ type Control struct {
 	Name        string
 	Status      string
 	ActualValue string
+	Description string
+	Result      string
+	Solution    string
 	AuditFile   string
 }
 
@@ -69,16 +72,18 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 
 		if len(nameSplit) == 0 {
 			control.ID = "Unknown"
-			control.Status = item.ComplianceResult
 			control.Name = name
-			control.ActualValue = item.ComplianceActualValue
+
 		} else {
 			control.ID = nameSplit[0]
 			control.Name = strings.Join(nameSplit[1:], " ")
 			control.Name = strings.ReplaceAll(control.Name, ",", " ")
-			control.Status = item.ComplianceResult
-			control.ActualValue = item.ComplianceActualValue
 		}
+
+		control.Status = item.ComplianceResult
+		control.ActualValue = item.ComplianceActualValue
+		control.Description = item.ComplianceInfo
+		control.Solution = item.ComplianceSolution
 
 		// add the control ID into the observed id slice for sorting later
 		unsortedControlIds[control.AuditFile] = append(unsortedControlIds[control.AuditFile], control.ID)

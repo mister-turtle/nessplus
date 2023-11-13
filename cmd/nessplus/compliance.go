@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
+	"github.com/mister-turtle/nessplus"
 	"github.com/urfave/cli/v2"
 )
 
@@ -15,6 +17,7 @@ func compliance(ctx *cli.Context) error {
 
 	argFile := ctx.String("file")
 	argCSVFile := ctx.String("csv")
+	argCSVFields := ctx.String("csv-fields")
 	argPrintFailed := ctx.Bool("print-failed")
 
 	overview, err := parse(argFile)
@@ -89,20 +92,69 @@ func compliance(ctx *cli.Context) error {
 				}
 
 				writer := csv.NewWriter(csvFile)
-				err = writer.Write([]string{"ComplianceID", "Name", "Status", "Actual Value"})
+				err = writeCSV(writer, audit.Controls, argCSVFields)
 				if err != nil {
 					return err
 				}
-
-				for _, control := range audit.Controls {
-					err = writer.Write([]string{control.ID, control.Name, control.Status, control.ActualValue})
-					if err != nil {
-						return err
-					}
-				}
-				writer.Flush()
 			}
 		}
 	}
 	return nil
+}
+
+func writeCSV(w *csv.Writer, controls []nessplus.Control, argFields string) error {
+
+	if len(controls) == 0 {
+		return fmt.Errorf("empty controls set passed to csv writer")
+	}
+
+	fields := strings.Split(argFields, ",")
+	if len(fields) == 0 {
+		return fmt.Errorf("invalid fields passed to csv writer")
+	}
+
+	for _, field := range fields {
+		_, err := fieldValue(controls[0], field)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := w.Write(fields)
+	if err != nil {
+		return err
+	}
+
+	for _, control := range controls {
+		var printFields []string
+		for _, field := range fields {
+			val, err := fieldValue(control, field)
+			if err != nil {
+				return err
+			}
+			printFields = append(printFields, val)
+		}
+		err = w.Write(printFields)
+		if err != nil {
+			return err
+		}
+	}
+	w.Flush()
+	return nil
+}
+
+func fieldValue(control nessplus.Control, field string) (string, error) {
+
+	structType := reflect.TypeOf(control)
+	structValues := reflect.ValueOf(control)
+
+	numFields := structType.NumField()
+
+	for i := 0; i < numFields; i++ {
+		structField := structType.Field(i)
+		if structField.Name == field {
+			return fmt.Sprintf("%s", structValues.Field(i)), nil
+		}
+	}
+	return "", fmt.Errorf("field %s was not found", field)
 }
