@@ -8,57 +8,57 @@ import (
 	"io"
 )
 
-type NessusRaw struct {
+type nessusRaw struct {
 	XMLName xml.Name `xml:"NessusClientData_v2"`
-	Policy  Policy   `xml:"Policy"`
-	Report  Report   `xml:"Report"`
+	Policy  policy   `xml:"Policy"`
+	Report  report   `xml:"Report"`
 }
 
-type Policy struct {
+type policy struct {
 	PolicyName  string      `xml:",chardata"`
-	Preferences Preferences `xml:"Preferences"`
+	Preferences preferences `xml:"Preferences"`
 }
 
-type Preferences struct {
-	Server ServerPreferences `xml:"ServerPreferences"`
+type preferences struct {
+	Server serverPreferences `xml:"ServerPreferences"`
 }
 
-type ServerPreferences struct {
-	Preferences []Preference `xml:"preference"`
+type serverPreferences struct {
+	Preferences []preference `xml:"preference"`
 }
 
-type Preference struct {
+type preference struct {
 	Name  string `xml:"name"`
 	Value string `xml:"value"`
 }
 
 // Report has a name and contains all the host details.
-type Report struct {
+type report struct {
 	Name        string       `xml:"name,attr"`
-	ReportHosts []ReportHost `xml:"ReportHost"`
+	ReportHosts []reportHost `xml:"ReportHost"`
 }
 
 // ReportHost containts the hostname or ip address for the host and
 // all vulnerability and service information.
-type ReportHost struct {
+type reportHost struct {
 	Name           string         `xml:"name,attr"`
 	HostProperties HostProperties `xml:"HostProperties"`
-	ReportItems    []ReportItem   `xml:"ReportItem"`
+	ReportItems    []reportItem   `xml:"ReportItem"`
 }
 
 // HostProperties are tags filled with likely useless information.
 type HostProperties struct {
-	Tags []Tag `xml:"tag"`
+	Tags []tag `xml:"tag"`
 }
 
 // Tag is used to split the tag into name and the tag content.
-type Tag struct {
+type tag struct {
 	Name string `xml:"name,attr"`
 	Data string `xml:",chardata"`
 }
 
 // ReportItem is vulnerability plugin output.
-type ReportItem struct {
+type reportItem struct {
 	Port                       int      `xml:"port,attr"`
 	SvcName                    string   `xml:"svc_name,attr"`
 	Protocol                   string   `xml:"protocol,attr"`
@@ -103,7 +103,7 @@ type ReportItem struct {
 }
 
 type NessusRun struct {
-	Raw      NessusRaw
+	Raw      nessusRaw
 	Metadata Metadata
 	Hosts    []Host
 }
@@ -124,7 +124,7 @@ func Parse(r io.Reader) (*NessusRun, error) {
 		return nil, err
 	}
 
-	var raw = NessusRaw{}
+	var raw = nessusRaw{}
 	err = xml.Unmarshal(data, &raw)
 	if err != nil {
 		return nil, err

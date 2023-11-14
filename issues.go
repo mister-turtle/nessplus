@@ -31,7 +31,7 @@ type Issue struct {
 	SeverityInt int
 }
 
-func parseIssues(host ReportHost) ([]Issue, error) {
+func parseIssues(host reportHost) ([]Issue, error) {
 
 	var issues []Issue
 

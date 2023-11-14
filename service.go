@@ -11,7 +11,7 @@ type Service struct {
 	TLS      bool
 }
 
-func parseServices(host ReportHost) ([]Service, error) {
+func parseServices(host reportHost) ([]Service, error) {
 
 	var services = make(map[int]Service)
 

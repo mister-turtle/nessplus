@@ -21,7 +21,7 @@ type Timing struct {
 	Duration time.Duration
 }
 
-func extractMetadata(raw NessusRaw) Metadata {
+func extractMetadata(raw nessusRaw) Metadata {
 	var meta Metadata
 
 	meta.PolicyName = raw.Policy.PolicyName
@@ -73,7 +73,7 @@ type HostMetadata struct {
 	OperatingSystem string
 }
 
-func extractHostMetadata(host ReportHost) HostMetadata {
+func extractHostMetadata(host reportHost) HostMetadata {
 
 	meta := HostMetadata{
 		Name: host.Name,

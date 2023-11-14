@@ -40,9 +40,16 @@ type Control struct {
 }
 
 // parseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
-// control IDs are returned in sorted, ascending order.
-func parseCompliance(host ReportHost) (Compliance, error) {
+// control IDs are returned in sorted, ascending order. There can be multiple compliance runs in a single report
+// and there's no gurantee of the order of they appear in the XML.
+func parseCompliance(host reportHost) (Compliance, error) {
 
+	// We need a double map to cater for the arbitrary order of multiple
+	// benchmark runs and controls. This is used for temporary storage
+	// and sorted later by using the unsortedControlIds map to ids slice.
+	// unsortedControls[<BenchmarkName>][<ControlID>]
+	//                         |              |
+	//                   CIS Windows 11 L1    1.2.3.4
 	var unsortedControls = make(map[string]map[string]Control)
 	var unsortedControlIds = make(map[string][]string)
 
@@ -53,7 +60,7 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 
 		var control Control
 
-		// a report item could be any number of things, filter out non-compliance here
+		// a reportItem could be any number of things, filter out non-compliance here
 		if item.Compliance == "" {
 			continue
 		}
@@ -88,7 +95,7 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 		// add the control ID into the observed id slice for sorting later
 		unsortedControlIds[control.AuditFile] = append(unsortedControlIds[control.AuditFile], control.ID)
 
-		// handle host totals
+		// track running totals for both the host and the individual benchmark
 		auditTotals := compliance.Audits[control.AuditFile]
 		compliance.Total++
 		auditTotals.Total++
@@ -109,13 +116,12 @@ func parseCompliance(host ReportHost) (Compliance, error) {
 		}
 
 		compliance.Audits[control.AuditFile] = auditTotals
-		// handler per-audit totals
 
-		// add to results map for storing
+		// add the control to the unsorted map
 		unsortedControls[control.AuditFile][control.ID] = control
 	}
 
-	// for each audit (key) in the map, get the controls map (value)
+	// for each audit (key) in the map, get the controls map
 	for audit := range unsortedControls {
 
 		if ids, ok := unsortedControlIds[audit]; ok {
