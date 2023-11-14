@@ -1,6 +1,8 @@
 // Credit for the base of the XML structs goes to Tom Steele / Lair Framework
 // these have been expanded upon with missing elements and restructured to be easier to work with.
 // https://github.com/lair-framework/go-nessus/blob/master/nessus.go
+//
+// This file contains the raw Nessus XML format used for parsing a Nessus export.
 package nessplus
 
 import "encoding/xml"
