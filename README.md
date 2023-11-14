@@ -1,16 +1,23 @@
 # NessPlus
+
 [![Go Reference](https://pkg.go.dev/badge/github.com/mister-turtle/nessplus.svg)](https://pkg.go.dev/github.com/mister-turtle/nessplus) [![Go Report Card](https://goreportcard.com/badge/github.com/mister-turtle/nessplus)](https://goreportcard.com/report/github.com/mister-turtle/nessplus) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mister-turtle/nessplus?sort=semver)
 
 This is an on-going project to make Nessus output more useful in day to day pentesting.
 
-## Installation
+## To start using NessPlus
+
+### Using Go Install
 ```sh
 go install github.com/mister-turtle/nessplus/cmd/nessplus@latest
 ```
 Using `go install` will install the binary to your GOBIN (`go env GOBIN` to check) so it will need to be in your shell `$PATH` for everyday usage.
 
-## Building
-If you would prefer to build from scratch you can run the following
+### Download a pre-built release
+
+Just visit the [Releases](https://github.com/mister-turtle/nessplus/releases) page and pick a suitable binary
+
+### Clone and build the repository
+
 ```sh
 $ git clone https://github.com/mister-turtle/nessplus
 $ cd nessplus
@@ -43,7 +50,9 @@ COMMANDS:
 GLOBAL OPTIONS:
    --help, -h  show help
 ```
+
 ## Todo
+
 - [ ] Extract CVEs attached to a host/service
 - [ ] Use searchsploit to find known exploit code
 - [ ] Collate issues for reporting (opinionated)
