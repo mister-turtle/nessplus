@@ -42,12 +42,12 @@ type report struct {
 // all vulnerability and service information.
 type reportHost struct {
 	Name           string         `xml:"name,attr"`
-	HostProperties HostProperties `xml:"HostProperties"`
+	HostProperties hostProperties `xml:"HostProperties"`
 	ReportItems    []reportItem   `xml:"ReportItem"`
 }
 
 // HostProperties are tags filled with likely useless information.
-type HostProperties struct {
+type hostProperties struct {
 	Tags []tag `xml:"tag"`
 }
 
