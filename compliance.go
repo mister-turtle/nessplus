@@ -41,7 +41,7 @@ type Control struct {
 
 // parseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
 // control IDs are returned in sorted, ascending order. There can be multiple compliance runs in a single report
-// and there's no gurantee of the order of they appear in the XML.
+// and there's no guarantee of the order of they appear in the XML.
 func parseCompliance(host reportHost) (Compliance, error) {
 
 	// We need a double map to cater for the arbitrary order of multiple
