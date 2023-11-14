@@ -1,5 +1,6 @@
 # NessPlus
-  
+[![Go Reference](https://pkg.go.dev/badge/github.com/mister-turtle/nessplus.svg)](https://pkg.go.dev/github.com/mister-turtle/nessplus) [![Go Report Card](https://goreportcard.com/badge/github.com/mister-turtle/nessplus)](https://goreportcard.com/badge/github.com/mister-turtle/nessplus) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mister-turtle/nessplus?sort=semver)
+
 This is an on-going project to make Nessus output more useful in day to day pentesting.
 
 ## Installation
