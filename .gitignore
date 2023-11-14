@@ -23,3 +23,4 @@ go.work
 # failsafe for test data
 *.csv
 *.nessus
+dist/
