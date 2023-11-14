@@ -113,6 +113,7 @@ func writeCSV(w *csv.Writer, controls []nessplus.Control, argFields string) erro
 		return fmt.Errorf("invalid fields passed to csv writer")
 	}
 
+	// validate the fields being passed through are actually struct members
 	for _, field := range fields {
 		_, err := fieldValue(controls[0], field)
 		if err != nil {
@@ -120,12 +121,16 @@ func writeCSV(w *csv.Writer, controls []nessplus.Control, argFields string) erro
 		}
 	}
 
+	// write the headers
 	err := w.Write(fields)
 	if err != nil {
 		return err
 	}
 
 	for _, control := range controls {
+
+		// create the string slice for the CSV writer containing values from
+		// the fields
 		var printFields []string
 		for _, field := range fields {
 			val, err := fieldValue(control, field)
@@ -134,6 +139,8 @@ func writeCSV(w *csv.Writer, controls []nessplus.Control, argFields string) erro
 			}
 			printFields = append(printFields, val)
 		}
+
+		// write the values to the CSV
 		err = w.Write(printFields)
 		if err != nil {
 			return err

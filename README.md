@@ -2,23 +2,6 @@
   
 This is an on-going project to make Nessus output more useful in day to day pentesting.
 
-## Features
-### Compliance
-Produce an overview of a Nessus compliance scan: 
-* Supports multiple compliance benchmarks per host in a single run
-* Optionally write a CSV per host and benchmark containing results
-* Optionally print failed controls to the terminal
-
-### Issues
-Print out an overview of issues per host
-* Sorted by severity rating
-* Color highlighted for severity
-* Filter on minimum severity level
-
-### Services
-Display a list of discovered services per host
-* Includes TLS status
-
 ## Installation
 ```sh
 go install github.com/mister-turtle/nessplus/cmd/nessplus@latest
@@ -50,7 +33,6 @@ COMMANDS:
 GLOBAL OPTIONS:
    --help, -h  show help
 ```
-
 ## Todo
 - [ ] Extract CVEs attached to a host/service
 - [ ] Use searchsploit to find known exploit code

@@ -39,7 +39,7 @@ type Control struct {
 	AuditFile   string
 }
 
-// ParseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
+// parseCompliance takes a ReportHost and produces a Compliance object to represent the benchmark run against the host.
 // control IDs are returned in sorted, ascending order.
 func parseCompliance(host ReportHost) (Compliance, error) {
 
