@@ -6,6 +6,15 @@ This is an on-going project to make Nessus output more useful in day to day pent
 ```sh
 go install github.com/mister-turtle/nessplus/cmd/nessplus@latest
 ```
+Using `go install` will install the binary to your GOBIN (`go env GOBIN` to check) so it will need to be in your shell `$PATH` for everyday usage.
+
+## Building
+If you would prefer to build from scratch you can run the following
+```sh
+$ git clone https://github.com/mister-turtle/nessplus
+$ cd nessplus
+$ go mod download && go build ./cmd/nessplus
+```
 
 ## Usage
 ```
